@@ -13,7 +13,8 @@
         </div>
             <ul>
                 {% for book in books %}
-                    <a href="/bookset/detail/{{book.id}}/"><li>{{book.id}}--{{book.title}}--{{book.price}}--{{book.pub_date}}</li></a>
+                    {#<a href="/detail/{{book.id}}/"><li>{{book.id}}--{{book.title}}--{{book.price}}--{{book.pub_date}}</li></a>#}
+                    <li><a href="{%url 'bookset:detail' book.id %}">{{book.id}}--{{book.title}}--{{book.price}}--{{book.pub_date}}</a></li>
                 {% endfor %}
             </ul>
 

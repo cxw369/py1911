@@ -36,5 +36,5 @@ def jsondata(request):
 urlpatterns = [
     path('admin/', admin.site.urls),
     # 1.使用path将bookset的路由进行包含
-    path("bookset/", include("bookset.urls")),
+    path("", include("bookset.urls", namespace="bookset")),
 ]

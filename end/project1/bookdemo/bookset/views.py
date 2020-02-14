@@ -1,5 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.template import loader
+from django.urls import reverse
+
 from .models import Book,Hero
 
 # Create your views here.
@@ -30,6 +32,73 @@ def detail(request, bookid):
     # result = template.render(context)
     # return HttpResponse(result)
     return render(request, 'detail.html', {"book": book})
+
+
+def delete(request, bookid):
+    book = Book.objects.get(id=bookid)
+    book.delete()
+    return redirect(to="/")
+
+
+def delete_hero(request, heroid):
+    hero = Hero.objects.get(id=heroid)
+    bookid = hero.book.id
+    hero.delete()
+    url = reverse("bookset:detail", args=(bookid,))
+    return redirect(to=url)
+
+
+def add_hero(request, bookid):
+    if request.method == "GET":
+        return render(request, "addhero.html")
+    elif request.method == "POST":
+        hero = Hero()
+        hero.name = request.POST.get("heroname")
+        hero.gender = request.POST.get("sex")
+        hero.content = request.POST.get("herocontent")
+        hero.book = Book.objects.get(id=bookid)
+        hero.save()
+        url = reverse("bookset:detail", args=(bookid,))
+        return redirect(to=url)
+
+
+def edithero(request, heroid):
+    # 使用get方法进入英雄的编辑页面
+    hero = Hero.objects.get(id=heroid)
+    if request.method == "GET":
+        return render(request, "edithero.html", {'hero': hero})
+    elif request.method == "POST":
+        hero.name = request.POST.get("heroname")
+        hero.gender = request.POST.get("sex")
+        hero.content = request.POST.get("herocontent")
+        hero.save()
+        url = reverse("bookset:detail", args=(hero.book.id,))
+        return redirect(to=url)
+
+
+def add_book(request):
+    if request.method == "GET":
+        return render(request, "addbook.html")
+    elif request.method == "POST":
+        book = Book()
+        book.title = request.POST.get("booktitile")
+        book.price = request.POST.get("bookprice")
+        book.pub_date = request.POST.get("bookpub_date")
+        book.save()
+        return redirect(to="/")
+
+
+def editbook(request, bookid):
+    # 使用get方法进入英雄的编辑页面
+    book = Book.objects.get(id=bookid)
+    if request.method == "GET":
+        return render(request, "editbook.html", {'book': book})
+    elif request.method == "POST":
+        book.title = request.POST.get("booktitle")
+        book.price = request.POST.get("bookprice")
+        book.pub_date = request.POST.get("bookpub_date")
+        book.save()
+        return redirect(to="/")
 
 
 def about(request):

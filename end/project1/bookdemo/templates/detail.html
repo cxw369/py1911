@@ -10,9 +10,11 @@
         <h2>书名:{{book.title}}</h2>
         <ul>
             {% for hero in book.hero_set.all %}
-                <li>{{hero.name}}--{{hero.gender}}--{{hero.content}}</li>
+              <li>{{hero.name}}--{{hero.gender}}--{{hero.content}}<a href="{% url 'bookset:delete_hero' hero.id %}">删除</a></li>
+              <li><a href="{% url 'bookset:edithero' hero.id %}">编辑英雄</a></li>
             {% endfor %}
         </ul>
+        <a href="{% url 'bookset:add_hero' book.id %}">添加英雄</a>
     </div>
     <a href="/">返回列表页</a>
 </body>

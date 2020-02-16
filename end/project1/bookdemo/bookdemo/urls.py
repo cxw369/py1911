@@ -37,4 +37,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # 1.使用path将bookset的路由进行包含
     path("", include("bookset.urls", namespace="bookset")),
+    path("", include("polls.urls", namespace="polls")),
 ]

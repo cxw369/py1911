@@ -14,7 +14,7 @@
             <h1>共有书籍{{books.count}}本</h1>
             <ul>
                 {% for book in books %}
-                    {#<a href="/detail/{{book.id}}/"><li>{{book.id}}--{{book.title}}--{{book.price}}--{{book.pub_date}}</li></a>#}
+                    {# <a href="/detail/{{book.id}}/"><li>{{book.id}}--{{book.title}}--{{book.price}}--{{book.pub_date}}</li></a>#}
                     <li><a href="{%url 'bookset:detail' book.id %}">{{book.id}}--{{book.title}}--{{book.price}}--{{book.pub_date}}</a></li>
                     <li><a href="{% url 'bookset:delete' book.id %}">删除</a></li>
                     <li><a href="{% url 'bookset:editbook' book.id %}">编辑</a></li>

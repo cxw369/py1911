@@ -9,6 +9,9 @@ https://docs.djangoproject.com/en/3.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
+# Django项目的配置文件
+# 我们要配置一些功能就需要在本文件中编写代码
+
 
 import os
 
@@ -16,47 +19,57 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '-*!q&crrmy_b*1@=1lg_m)#ec6ts^ec$v469&og5y+r9%zhno@'
+SECRET_KEY = 'hlhevm04z#h9t2!b3d4utw%2rad50l%gv0iequ23t(!7!&%3m9'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-ALLOWED_HOSTS = []
+# 只有关掉调试模式才能显示404 之类的错误  上线之后设置False
+# DEBUG = False
+# 如果DEBUG设置为False  ALLOWED_HOSTS代表那些域名ip电脑可以访问服务
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'polls',
-    'bookset',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 想要使用应用中的模型类  需要注册该应用
+    'bookset',
+    'polls',
+    'download'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',
+    # csrf验证需要先关闭 否则 443 forbiden
+    # 这个中间件可以检测是否携带csrf_token信息  用于post检测
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# 跟配置  指明项目总的路由配置文件
 ROOT_URLCONF = 'bookdemo.urls'
 
 TEMPLATES = [
     {
+        # 指明模板使用的翻译引擎 ：将django模板转换为最终的html
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        # 在dirs中配置自己的模板目录
+        'DIRS': [os.path.join(BASE_DIR,'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -75,6 +88,9 @@ WSGI_APPLICATION = 'bookdemo.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
+
+# DATABASES 可以配置项目的数据库
+# 默认使用的是关系型数据库 sqlite 轻量级文件数据库 仅有一个文件 db.sqlite3
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -120,4 +136,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+# 需要配置静态文件所处位置
+STATICFILES_DIRS = [os.path.join(BASE_DIR,'static')]
+
+# 使用自定义的用户类作为django的认证类需要使用配置
+AUTH_USER_MODEL = 'polls.User'

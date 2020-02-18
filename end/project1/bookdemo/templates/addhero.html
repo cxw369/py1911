@@ -7,6 +7,7 @@
 <body>
     <div class="container">
         <form action="#" method="post">
+            {% csrf_token %}
             英雄名字:<input type="text" name="heroname" placeholder="请输入角色名">
             <br>
             英雄技能:<input type="text" name="herocontent" placeholder="请输入角色绝招">

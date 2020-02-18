@@ -7,24 +7,56 @@
 </head>
 <body>
     <div class="container">
-        <h1>这里是首页</h1>
-        <div class="center">
-            <img src="/static/img/图片.gif" alt="">
-        </div>
-            <h1>共有书籍{{books.count}}本</h1>
+        <!--  这里是普通的注释        -->
+        {# 这里是django模板注释 #}
+
+        <h1 class="center">这里是首页   <a href="{% url 'polls:index' %}">进入投票应用</a>      </h1>
+
+
+        <div>
+            <div class="center">
+                <img src="/static/img/图片.gif" alt="">
+            </div>
+
+
+            <h2>共有书籍({{books.count}})</h2>
+            <h2>共有书籍({{books|length}})</h2>
+            <h2>{{name|upper|join:'++'|length}}</h2>
+            {# 指明得到的name1是安全的 可以让浏览器解释 #}
+            <h2>{{name1|safe}}</h2>
+
+            {# django会默认开启自动转义  不翻译html格式代码   #}
+            {% autoescape off %}
+                <h2>{{name1}}</h2>
+                <h2>{{name1}}</h2>
+
+                <h2>{{name1}}</h2>
+            {% endautoescape %}
+
             <ul>
-                {% for book in books %}
-                    {# <a href="/detail/{{book.id}}/"><li>{{book.id}}--{{book.title}}--{{book.price}}--{{book.pub_date}}</li></a>#}
-                    <li><a href="{%url 'bookset:detail' book.id %}">{{book.id}}--{{book.title}}--{{book.price}}--{{book.pub_date}}</a></li>
-                    <li><a href="{% url 'bookset:delete' book.id %}">删除</a></li>
-                    <li><a href="{% url 'bookset:editbook' book.id %}">编辑</a></li>
+                {% for book in books  %}
+                    <li>
+                        {# <a href="/detail/{{book.id}}/"> <li>{{book.id}} -- {{book.title}} -- {{book.price}} -- {{book.pub_date}}</li>  </a> #}
+
+                        <a href="{% url 'bookset:detail' book.id %}"> {{book.id}} -- {{book.title}} -- {{book.price}} -- {{book.pub_date}}    </a>
+
+                        <a href="{% url 'bookset:delete' book.id %}">删除</a>
+                    </li>
                 {% endfor %}
+
             </ul>
-            <a href="{% url 'bookset:add_book' %}">添加书籍</a>
 
+              <h2><a href="{% url 'bookset:add_book' %}">添加书籍</a>  </h2>
+        </div>
 
+        {% for smallb in smallbook %}
+            <li>{{smallb.title}}</li>
+        {% empty %}
+            <li>当前列表没有对象</li>
+        {% endfor %}
+
+        <a href="http://127.0.0.1:8000/download/require.txt">下载 reuire</a>
+        <a href="http://127.0.0.1:8000/download/db.sqlite3">下载 db</a>
     </div>
-
-
 </body>
 </html>

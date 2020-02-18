@@ -141,3 +141,7 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR,'static')]
 
 # 使用自定义的用户类作为django的认证类需要使用配置
 AUTH_USER_MODEL = 'polls.User'
+
+MEDIA_URL ='/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+MEDIAFILES_DIRS = [os.path.join(BASE_DIR,'media')]

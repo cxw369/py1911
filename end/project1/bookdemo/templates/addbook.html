@@ -7,6 +7,7 @@
 <body>
     <div class="container">
         <form action="#" method="post">
+            {% csrf_token %}
             名称:<input type="text" name="booktitile" placeholder="请输入书籍名称">
             <br>
             价格:<input type="text" name="bookprice" placeholder="请输入书籍价格">

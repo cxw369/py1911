@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect,reverse
 from django.http import HttpResponse,JsonResponse,FileResponse
 from .models import *
+from .forms import *
 # Create your views here.
 from django.views.generic import View,TemplateView,ListView,CreateView,DeleteView,UpdateView,DetailView as DV
 # View类为所有的视图响应类的父类
@@ -149,43 +150,69 @@ class ResultView(View):
 
 def login(request):
     if request.method == "GET":
-        return render(request,'polls/login.html')
+        # 第一种方法自己写一个html文件用于显示
+        # return render(request,'polls/login.html')
+        # 方法2:使用Django自带的表单类来生成HTML文件
+        lf = LoginForm()
+        return render(request, 'polls/login.html', {"lf": lf})
     elif request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
+        # 方法1
+        # username = request.POST.get("username")
+        # password = request.POST.get("password")
+        # 方法2
+        lf = LoginForm(data=request.POST)
+        if lf.is_valid():
+            username = lf.cleaned_data["username"]
+            password = lf.cleaned_data["password"]
+        # ---------------方法2结束--------------------
         # 可以使用django自带的用户认证系统  认证成功返回用户 失败返回None
-        user = authenticate(username=username,password=password)
+            user = authenticate(username=username,password=password)
         # 调用django登录方法  其实是为了生成cookie
-        if user:
-            lin(request, user)
-            next = request.GET.get("next")
-            print("取得next参数为",next)
-            if next:
-                url = next
-            else:
-                url = reverse("polls:index")
-            return redirect(to=url)
-        else:
-            url = reverse("polls:login")
-            return redirect(to=url)
-
-def regist(request):
-    if request.method == "GET":
-        return render(request,'polls/regist.html')
-    else:
-        username = request.POST.get("username")
-        password = request.POST.get("password")
-        password2 = request.POST.get("password2")
-        if User.objects.filter(username=username).count()>0:
-            return HttpResponse("用户名已存在")
-        else:
-            if password == password2:
-                User.objects.create_user(username=username, password=password)
-                url = reverse("polls:login")
+            if user:
+                lin(request, user)
+                next = request.GET.get("next")
+                print("取得next参数为",next)
+                if next:
+                    url = next
+                else:
+                    url = reverse("polls:index")
                 return redirect(to=url)
             else:
-                return HttpResponse("密码不一致")
-
+                # url = reverse("polls:login")
+                # return redirect(to=url)
+                return render(request, 'polls/login.html', {"error": "用户名和密码不匹配","lf":lf})
+        else:
+            return HttpResponse("未知错误")
+def regist(request):
+    if request.method == "GET":
+        rf = RegistForm()
+        return render(request, 'polls/regist.html', {"rf": rf})
+        # 方法1
+        # return render(request,'polls/regist.html')
+    elif request.method == "POST":
+        # 方法1:
+        # username = request.POST.get("username")
+        # password = request.POST.get("password")
+        # password2 = request.POST.get("password2")
+        # 方法3：
+        rf = RegistForm(data=request.POST)
+        if rf.is_valid():
+            username = rf.cleaned_data["username"]
+            password = rf.cleaned_data["password"]
+            password2 = rf.cleaned_data["password2"]
+            if User.objects.get(username=username).count()>0:
+                # return HttpResponse("用户名已存在")
+                return render(request, 'polls/regist.html',{"error":"用户名已存在","rf":rf})
+            else:
+                if password == password2:
+                    User.objects.create_user(username=username, password=password)
+                    url = reverse("polls:login")
+                    return redirect(to=url)
+                else:
+                    # return HttpResponse("密码不一致")
+                    return render(request, 'polls/regist.html', {"error": "密码不一致","rf":rf})
+        else:
+            return render(request, 'polls/regist.html', {"error": "密码不一致或用户名已存在","rf":rf})
 
 
 

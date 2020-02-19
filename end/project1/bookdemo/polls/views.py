@@ -200,17 +200,17 @@ def regist(request):
             username = rf.cleaned_data["username"]
             password = rf.cleaned_data["password"]
             password2 = rf.cleaned_data["password2"]
-            if User.objects.get(username=username).count()>0:
-                # return HttpResponse("用户名已存在")
-                return render(request, 'polls/regist.html',{"error":"用户名已存在","rf":rf})
+            # if User.objects.get(username=username).count()>0:
+            #     # return HttpResponse("用户名已存在")
+            #     return render(request, 'polls/regist.html',{"error":"用户名已存在","rf":rf})
+            # else:
+            if password == password2:
+                User.objects.create_user(username=username, password=password)
+                url = reverse("polls:login")
+                return redirect(to=url)
             else:
-                if password == password2:
-                    User.objects.create_user(username=username, password=password)
-                    url = reverse("polls:login")
-                    return redirect(to=url)
-                else:
-                    # return HttpResponse("密码不一致")
-                    return render(request, 'polls/regist.html', {"error": "密码不一致","rf":rf})
+                # return HttpResponse("密码不一致")
+                return render(request, 'polls/regist.html', {"error": "密码不一致","rf":rf})
         else:
             return render(request, 'polls/regist.html', {"error": "密码不一致或用户名已存在","rf":rf})
 

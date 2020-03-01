@@ -24,16 +24,26 @@ from django.views.static import serve
 from rest_framework.documentation import include_docs_urls
 router = routers.DefaultRouter()
 # 可以通过router默认路由注册资源
-router.register("categorys",CategoryViewSets)
+router.register("categorys",CategoryViewSets2)
 router.register("goods",GoodViewSets)
 router.register("goodimgs",GoodImgsViewSets)
 urlpatterns = [
     path('admin/', admin.site.urls),
     url('media/(?P<path>.*)',serve,{'document_root':MEDIA_ROOT}),
     # 配置RestFulAPI
-    # path('api/v1/', include(router.urls)),
-    url(r'^categorylist/$',categoryList,name="caregorylist"),
-    url(r'^categorydetail/(\d+)/$',categoryDetail,name="categorydetail"),
+    path('api/v1/', include(router.urls)),
+    # 基于函数
+    # url(r'^categorylist/$',categoryList,name="caregorylist"),
+    # url(r'^categorydetail/(\d+)/$',categoryDetail,name="categorydetail"),
+    # 基于类
+    # url(r'^categorylist/$',CategoryListView.as_view(),name="caregorylist"),
+    # url(r'^categorydetail/(\d+)/$',CategoryDetailView.as_view(),name="categorydetail"),
+    # 基于高级类
+    # url(r'^categorylist/$',CategoryListView.as_view(),name="caregorylist"),
+    # url(r'^categorydetail/(?P<pk>\d+)/$',CategoryDetailView.as_view(),name="categorydetail"),
+    # 终极方法
+    # url(r'^categorys/$',CategoryViewSets2.as_view({'get':'list',"post":"create"})),
+    # url(r'^categorys/(?P<pk>\d+)/$',CategoryViewSets2.as_view({'get':'retrieve','put':'update','patch':'update','delete':'destroy'})),
     # api文档地址
     path('api/v1/docs', include_docs_urls(title="api",description="v1")),
     # 为了在Drf路由调试界面中能够实现相关功能引入下方路由

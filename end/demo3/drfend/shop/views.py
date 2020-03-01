@@ -21,9 +21,91 @@ from .models import *
 from .serializers import *
 from rest_framework.decorators import api_view
 from django.http import HttpResponse
-from rest_framework import status
+from rest_framework import status,generics,mixins
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
+from django.views import View
+from rest_framework.views import APIView
+
+
+class CategoryListView2(generics.GenericAPIView,mixins.ListModelMixin,mixins.CreateModelMixin):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+    def get(self,request):
+        return self.list(request)
+
+    def post(self,request):
+        return self.create(request)
+
+
+class CategoryListView(generics.ListCreateAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+
+# 终极方法
+class CategoryViewSets2(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+
+class CategoryDetailView2(generics.GenericAPIView,mixins.RetrieveModelMixin,mixins.UpdateModelMixin,mixins.DestroyModelMixin):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+    def get(self,request,pk):
+        return self.retrieve(request,pk=pk)
+
+    def put(self,request,pk):
+        return self.update(request,pk)
+
+    def patch(self,request,pk):
+        return self.update(request,pk)
+
+    def delete(self,request,pk):
+        return self.destroy(request,pk)
+
+
+class CategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+
+class CategoryListView1(APIView):
+    def get(self,request):
+        seria = CategorySerializer(instance=Category.objects.all(),many=True)
+        return Response(data=seria.data,status=status.HTTP_200_OK)
+
+    def post(self,request):
+        seria = CategorySerializer(data=request.data)
+        # if seria.is_valid():
+        #     seria.save()
+        #     return Response(data=seria.data,status=status.HTTP_201_CREATED)
+        # else:
+        #     return Response(data=seria.errors,status=status.HTTP_400_BAD_REQUEST)
+        seria.is_valid(raise_exception=True)
+        seria.save()
+        return Response(data=seria.data, status=status.HTTP_201_CREATED)
+
+class CategoryDetailView1(APIView):
+    def get(self,request,cid):
+        seria = CategorySerializer(instance=get_object_or_404(Category,pk=cid))
+        return Response(seria.data,status=status.HTTP_200_OK)
+    def put(self,request,cid):
+        seria = CategorySerializer(instance=get_object_or_404(Category,pk=cid),data=request.data)
+        seria.is_valid(raise_exception=True)
+        seria.save()
+        return Response(data=seria.data, status=status.HTTP_201_CREATED)
+    def patch(self,request,cid):
+        seria = CategorySerializer(instance=get_object_or_404(Category, pk=cid), data=request.data)
+        seria.is_valid(raise_exception=True)
+        seria.save()
+        return Response(data=seria.data, status=status.HTTP_201_CREATED)
+    def delete(self,request,cid):
+        get_object_or_404(Category,pk=cid).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 # 通过api_view装饰器可以将基于函数的视图转换为APIVIEW基于类的视图
 @api_view(["GET","POST"])

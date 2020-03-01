@@ -19,6 +19,34 @@
 from rest_framework import viewsets
 from .models import *
 from .serializers import *
+from rest_framework.decorators import api_view
+from django.http import HttpResponse
+from rest_framework.request import Request
+
+# 通过api_view装饰器可以将基于函数的视图转换为APIVIEW基于类的视图
+@api_view(["GET","POST"])
+def categoryList(request):
+    print(request,type(request))
+    if request.method == "GET":
+        print("获取到GET请求参数",request.query_params)
+        return HttpResponse("获取列表成功")
+    elif request.method == "POST":
+        print("获取到POST请求参数",request.data)
+        return HttpResponse("创建成功")
+
+
+@api_view(["GET","PUT","PATCH","DELETE"])
+def categoryDetail(request,cid):
+    if request.method == "GET":
+        print("获取到GET请求参数", request.query_params)
+        return HttpResponse("获取单个成功")
+    elif request.method == "PUT" or request.method == "PATCH":
+        print("获取到PUT/PATCH请求参数",request.data)
+        return HttpResponse("修改成功")
+    elif request.method == "DELETE":
+        return HttpResponse("删除成功")
+    else:
+        return HttpResponse("当前路由不允许"+request.method+"操作")
 
 
 class CategoryViewSets(viewsets.ModelViewSet):

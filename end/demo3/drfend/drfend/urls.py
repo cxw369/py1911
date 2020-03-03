@@ -15,37 +15,47 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from rest_framework import routers
-from shop.views import *
-from .settings import MEDIA_ROOT
 from django.conf.urls import url
 from django.views.static import serve
-# 引入api文档路由
+from .settings import MEDIA_ROOT
+from shop.views import *
+
+# 引入API文档路由
 from rest_framework.documentation import include_docs_urls
+
+# 引入DRF自带的路由类  根据视图名字可以自动生成 系列 路由
+from rest_framework import routers
 router = routers.DefaultRouter()
+
 # 可以通过router默认路由注册资源
-router.register("categorys",CategoryViewSets2)
-router.register("goods",GoodViewSets)
-router.register("goodimgs",GoodImgsViewSets)
+router.register('categorys',CategoryViewSets)  # /categorys/     /categorys/(?P<pk>\d+)/
+router.register('goods',GoodViewSets)
+router.register('goodimgs',GoodImgsViewSets)
+router.register('users',UserViewSets)
+router.register('orders',OrderViewSets)
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    url('media/(?P<path>.*)',serve,{'document_root':MEDIA_ROOT}),
+    # url(r'^media/(?P<path>.*)$', serve, {'document_root': MEDIA_ROOT}),
+    url('media/(?P<path>.*)',serve, {'document_root': MEDIA_ROOT}),
     # 配置RestFulAPI
-    path('api/v1/', include(router.urls)),
-    # 基于函数
-    # url(r'^categorylist/$',categoryList,name="caregorylist"),
-    # url(r'^categorydetail/(\d+)/$',categoryDetail,name="categorydetail"),
-    # 基于类
-    # url(r'^categorylist/$',CategoryListView.as_view(),name="caregorylist"),
-    # url(r'^categorydetail/(\d+)/$',CategoryDetailView.as_view(),name="categorydetail"),
-    # 基于高级类
-    # url(r'^categorylist/$',CategoryListView.as_view(),name="caregorylist"),
-    # url(r'^categorydetail/(?P<pk>\d+)/$',CategoryDetailView.as_view(),name="categorydetail"),
-    # 终极方法
-    # url(r'^categorys/$',CategoryViewSets2.as_view({'get':'list',"post":"create"})),
+    path('api/v1/',include(router.urls)),
+
+    # url(r'^categorylist/$',categoryList,name='categorylist'),
+    # url(r'^categorydetail/(\d+)/$',categoryDetail,name='categorydetail'),
+
+    # url 第二个参数本该是函数的引用 此处为何是函数的地址  此处as_view()  返回值其实是另外一个函数的引用(闭包)
+    # url(r'^categorylist/$',CategoryListView.as_view(),name='categorylist'),
+    # url(r'^categorydetail/(\d+)/$',CategoryDetailView.as_view(),name='categorydetail'),
+
+    # url(r'^categorylist/$',CategoryListView2.as_view(),name='categorylist'),
+    # url(r'^categorydetail/(?P<pk>\d+)/$',CategoryDetailView2.as_view(),name='categorydetail'),
+
+    # url(r'^categorys/$',CategoryViewSets2.as_view({'get':'list','post':'create'})),
     # url(r'^categorys/(?P<pk>\d+)/$',CategoryViewSets2.as_view({'get':'retrieve','put':'update','patch':'update','delete':'destroy'})),
-    # api文档地址
-    path('api/v1/docs', include_docs_urls(title="api",description="v1")),
-    # 为了在Drf路由调试界面中能够实现相关功能引入下方路由
-    path('', include('rest_framework.urls')),
+
+    # API文档地址
+    path('api/v1/docs/',include_docs_urls(title="RestFulAPI",description="RestFulAPI v1")),
+    # 为了在DRF路由调试界面能够使用用户相关功能需要引入以下路由
+    path('',include('rest_framework.urls'))
 ]

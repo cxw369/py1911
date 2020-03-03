@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ch*vtzl7eoox%u&&wk7i-)%&yj8+_1l7_4-l#ep_f!xn!5+pxn'
+SECRET_KEY = 'hxx$%_0s^aw^ce3==fcl1bn^t3$b^c!9!o$thln3!vmh7+ioii'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -123,10 +123,31 @@ STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 
-MEDIAFIELS_DIRS = [os.path.join(BASE_DIR, 'media')]
-# 重新配置
+MEDIAFIELS_DIRS = [os.path.join(BASE_DIR,'media')]
+
+
+
+# 此处可以对DjangoRestFrameWork重新配置
+# 此处可以对DjangoRestFrameWork重新配置
 REST_FRAMEWORK = {
+    # Schema
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.AutoSchema',
+
+    # 默认权限配置  每一个http方法都可以有对应的权限配置
+    # 全局配置  优先级高于视图类中的配置
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+    # 全局认证 优先级高于视图类中的配置
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        # 默认首先使用 session认证
+        'rest_framework.authentication.SessionAuthentication',
+        # 默认使用用户名，密码认证 将 YERtaW46MTIzNDU2进行解码处理得到对应的用户名和密码
+        'rest_framework.authentication.BasicAuthentication',
+    ],
 }
+
+# 应用名 模型名  推荐在没有数据库的前提 去配置
+AUTH_USER_MODEL = 'shop.User'

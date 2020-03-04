@@ -8,15 +8,15 @@ from rest_framework.decorators import api_view,action
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.throttling import AnonRateThrottle,UserRateThrottle
-
+from .pagenation import MyPagination
 from django.shortcuts import get_object_or_404
-
+from django_filters.rest_framework import DjangoFilterBackend
 
 from django.views import View
 from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework import mixins
-
+from rest_framework import filters
 from rest_framework import permissions
 from . import permissions as mypermissions
 
@@ -183,9 +183,15 @@ class CategoryViewSets(viewsets.ModelViewSet):
         if self.action == "create" or self.action == "update" or self.action == "partial_update" or self.action == "destroy":
             return [permissions.IsAdminUser()]
         else:
-            return [permissions.IsAuthenticated()]
+            return []
     throttle_classes = [AnonRateThrottle,UserRateThrottle]
-
+    # 自定义分页器
+    pagination_class = MyPagination
+    # 增加过滤和排序功能
+    filter_backends = [DjangoFilterBackend,filters.SearchFilter,filters.OrderingFilter]
+    filterset_fields = ["name"]
+    search_fields = ["name"]
+    order_fields = ["id"]
 
 class GoodViewSets(viewsets.ModelViewSet):
     queryset = Good.objects.all()

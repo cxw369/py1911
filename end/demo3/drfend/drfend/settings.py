@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'shop',
     'rest_framework',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -155,10 +156,13 @@ REST_FRAMEWORK = {
 
     'DEFAULT_THROTTLE_RATES':{
         # 有名用户
-        'user':'2/minutes',
+        'user':'100/day',
         # 匿名用户
-        'anon':'1/minutes',
+        'anon':'50/day',
     },
+    'DEFAULT_PAGINATION_CLASS':'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE':2,
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 
 }
 
@@ -166,5 +170,7 @@ REST_FRAMEWORK = {
 AUTH_USER_MODEL = 'shop.User'
 # 自定义认证类 应用名.文件名.认证类名
 AUTHENTICATION_BACKENDS = ('shop.authbackend.MyLoginBackend',)
-
+# from django.core.paginator import Paginator,Page
+# 分页 Paginator(多页) page(单页)
+# drf提供了pagination 建立在Django的深层封装
 

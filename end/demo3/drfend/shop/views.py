@@ -7,6 +7,7 @@ from django.http import HttpResponse
 from rest_framework.decorators import api_view,action
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.throttling import AnonRateThrottle,UserRateThrottle
 
 from django.shortcuts import get_object_or_404
 
@@ -183,14 +184,13 @@ class CategoryViewSets(viewsets.ModelViewSet):
             return [permissions.IsAdminUser()]
         else:
             return [permissions.IsAuthenticated()]
-
-
-
+    throttle_classes = [AnonRateThrottle,UserRateThrottle]
 
 
 class GoodViewSets(viewsets.ModelViewSet):
     queryset = Good.objects.all()
     serializer_class = GoodSerializer
+
 
 class GoodImgsViewSets(viewsets.ModelViewSet):
     queryset = GoodImgs.objects.all()

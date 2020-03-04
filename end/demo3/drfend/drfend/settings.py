@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'shop',
-    'rest_framework'
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -139,15 +139,32 @@ REST_FRAMEWORK = {
     # 全局配置  优先级高于视图类中的配置
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
+        # 'rest_framework.authentication,JWTAuthentication'
     ],
     # 全局认证 优先级高于视图类中的配置
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
         # 默认首先使用 session认证
         'rest_framework.authentication.SessionAuthentication',
         # 默认使用用户名，密码认证 将 YERtaW46MTIzNDU2进行解码处理得到对应的用户名和密码
         'rest_framework.authentication.BasicAuthentication',
     ],
+    # 反爬虫 配置全局的频次限制类
+    'DEFAULT_THROTTLE_CLASSES': ['rest_framework.throttling.AnonRateThrottle',
+                                'rest_framework.throttling.UserRateThrottle'],
+
+    'DEFAULT_THROTTLE_RATES':{
+        # 有名用户
+        'user':'2/minutes',
+        # 匿名用户
+        'anon':'1/minutes',
+    },
+
 }
 
 # 应用名 模型名  推荐在没有数据库的前提 去配置
 AUTH_USER_MODEL = 'shop.User'
+# 自定义认证类 应用名.文件名.认证类名
+AUTHENTICATION_BACKENDS = ('shop.authbackend.MyLoginBackend',)
+
+

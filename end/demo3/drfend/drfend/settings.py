@@ -40,9 +40,11 @@ INSTALLED_APPS = [
     'shop',
     'rest_framework',
     'django_filters',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -146,9 +148,9 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         # 默认首先使用 session认证
-        'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
         # 默认使用用户名，密码认证 将 YERtaW46MTIzNDU2进行解码处理得到对应的用户名和密码
-        'rest_framework.authentication.BasicAuthentication',
+        # 'rest_framework.authentication.BasicAuthentication',
     ],
     # 反爬虫 配置全局的频次限制类
     'DEFAULT_THROTTLE_CLASSES': ['rest_framework.throttling.AnonRateThrottle',
@@ -156,12 +158,12 @@ REST_FRAMEWORK = {
 
     'DEFAULT_THROTTLE_RATES':{
         # 有名用户
-        'user':'100/day',
+        'user':'1000/day',
         # 匿名用户
-        'anon':'50/day',
+        'anon':'100/day',
     },
     'DEFAULT_PAGINATION_CLASS':'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE':2,
+    # 'PAGE_SIZE':2,
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 
 }
@@ -174,3 +176,5 @@ AUTHENTICATION_BACKENDS = ('shop.authbackend.MyLoginBackend',)
 # 分页 Paginator(多页) page(单页)
 # drf提供了pagination 建立在Django的深层封装
 
+# 允许跨域
+CORS_ORIGIN_ALLOW_ALL = True

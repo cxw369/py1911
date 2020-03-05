@@ -186,7 +186,7 @@ class CategoryViewSets(viewsets.ModelViewSet):
             return []
     throttle_classes = [AnonRateThrottle,UserRateThrottle]
     # 自定义分页器
-    pagination_class = MyPagination
+    # pagination_class = MyPagination
     # 增加过滤和排序功能
     filter_backends = [DjangoFilterBackend,filters.SearchFilter,filters.OrderingFilter]
     filterset_fields = ["name"]
